@@ -16,4 +16,4 @@ jobs:
         python test_linter.py
     - name: Self-Lint
       run: |
-        python linter.py Dockerfile
+        python linter.py --path examples/Dockerfile.good

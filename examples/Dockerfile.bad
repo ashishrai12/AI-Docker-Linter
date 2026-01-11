@@ -1,0 +1,12 @@
+# This file contains common AI Docker mistakes
+FROM python:latest
+
+# Mistake: Copying everything before installing requirements (breaks cache)
+COPY . /app
+WORKDIR /app
+
+# Mistake: No --no-cache-dir, leading to huge image size
+RUN pip install torch torchvision
+
+# Mistake: apt-get without cleanup
+RUN apt-get update && apt-get install -y libgl1-mesa-glx

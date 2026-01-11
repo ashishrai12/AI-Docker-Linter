@@ -39,17 +39,23 @@ class AIDockerLinter:
 
     def check_aid01(self):
         """Check for NVIDIA base image if PyTorch/TensorFlow is preset."""
-        first_line = self.lines[0].lower() if self.lines else ""
-        if "nvidia" not in first_line and ("torch" in self.full_text or "tensorflow" in self.full_text):
+        # Find the (last) FROM line to support multi-stage builds
+        from_line = ""
+        for line in self.lines:
+            if line.strip().upper().startswith("FROM"):
+                from_line = line.lower()
+        
+        if "nvidia" not in from_line and ("torch" in self.full_text or "tensorflow" in self.full_text):
             self.issues.append("AID01")
 
     def check_aid02(self):
-        """Check if COPY . . is after pip install."""
+        """Check if global COPY is after pip install."""
         copy_all_index = -1
         pip_install_index = -1
         
         for i, line in enumerate(self.lines):
-            if re.search(r'COPY \. \.', line):
+            # Matches 'COPY . .' or 'COPY . /dir'
+            if re.search(r'COPY\s+\.\s+', line):
                 copy_all_index = i
             if "pip install" in line:
                 pip_install_index = i

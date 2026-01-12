@@ -1,7 +1,7 @@
 import re
 import argparse
 import os
-import sys1
+import sys
 
 # Dictionary-based rule system
 RULES = {
